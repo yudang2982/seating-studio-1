@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f1e9">
+  <title>班级座位编排 · Seating Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23245045'/%3E%3Cg fill='none' stroke='%23f4f1e9' stroke-width='3.5'%3E%3Crect x='14' y='14' width='14' height='14' rx='4'/%3E%3Crect x='36' y='14' width='14' height='14' rx='4'/%3E%3Crect x='14' y='36' width='14' height='14' rx='4'/%3E%3Cpath d='M43 36v14M36 43h14'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-logo" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+        <path d="M17.5 14v7M14 17.5h7"></path>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.6-3.6"></path>
+      </symbol>
+      <symbol id="i-upload" viewBox="0 0 24 24">
+        <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"></path>
+        <path d="M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3"></path>
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 4v12m0 0 4.5-4.5M12 16l-4.5-4.5"></path>
+        <path d="M4 17.5v1A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-1"></path>
+      </symbol>
+      <symbol id="i-printer" viewBox="0 0 24 24">
+        <path d="M7 8V3.5h10V8"></path>
+        <rect x="3" y="8" width="18" height="8.5" rx="2"></rect>
+        <path d="M7 14h10v6.5H7z"></path>
+        <path d="M17.5 11h.01"></path>
+      </symbol>
+      <symbol id="i-archive" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="5" rx="1.6"></rect>
+        <path d="M5 9v10.5h14V9M9.5 13h5"></path>
+      </symbol>
+      <symbol id="i-help" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M9.4 9.2a2.7 2.7 0 1 1 4.4 2.1c-.8.6-1.8 1.1-1.8 2.2M12 17h.01"></path>
+      </symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24">
+        <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24">
+        <path d="m3 3 18 18"></path>
+        <path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15.2 15.2 0 0 1-3 3.7"></path>
+        <path d="M6.7 7.5A15.4 15.4 0 0 0 2.5 12S6 18 12 18a9.4 9.4 0 0 0 3.2-.55"></path>
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+      </symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24">
+        <path d="m8.5 5-4 4 4 4"></path>
+        <path d="M4.5 9H14a5.5 5.5 0 0 1 0 11h-2"></path>
+      </symbol>
+      <symbol id="i-redo" viewBox="0 0 24 24">
+        <path d="m15.5 5 4 4-4 4"></path>
+        <path d="M19.5 9H10a5.5 5.5 0 0 0 0 11h2"></path>
+      </symbol>
+      <symbol id="i-monitor" viewBox="0 0 24 24">
+        <rect x="2.5" y="4" width="19" height="13" rx="2"></rect>
+        <path d="M8 21h8M12 17v4"></path>
+      </symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 6.5h16M9 6.5V4.2A1.2 1.2 0 0 1 10.2 3h3.6A1.2 1.2 0 0 1 15 4.2v2.3"></path>
+        <path d="m6 6.5.8 13a1.6 1.6 0 0 0 1.6 1.5h7.2a1.6 1.6 0 0 0 1.6-1.5l.8-13"></path>
+        <path d="M10 10.5v6M14 10.5v6"></path>
+      </symbol>
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="m6 6 12 12M18 6 6 18"></path>
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14"></path>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12.5 4.5 4.5L19 6.5"></path>
+      </symbol>
+      <symbol id="i-grip" viewBox="0 0 24 24">
+        <circle cx="9" cy="7" r="1.2" fill="currentColor" stroke="none"></circle>
+        <circle cx="15" cy="7" r="1.2" fill="currentColor" stroke="none"></circle>
+        <circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+        <circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"></circle>
+        <circle cx="9" cy="17" r="1.2" fill="currentColor" stroke="none"></circle>
+        <circle cx="15" cy="17" r="1.2" fill="currentColor" stroke="none"></circle>
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3.5"></circle>
+        <path d="M2.8 20c.4-4 2.8-6 6.2-6s5.8 2 6.2 6"></path>
+        <path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M17.4 14.4c2.2.6 3.5 2.4 3.8 5.1"></path>
+      </symbol>
+      <symbol id="i-window" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+        <path d="M12 3v18M3 12h18"></path>
+      </symbol>
+      <symbol id="i-door" viewBox="0 0 24 24">
+        <path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21"></path>
+        <path d="M2.5 21h19M15.5 12h.01"></path>
+      </symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24">
+        <rect x="4.5" y="10" width="15" height="11" rx="2.5"></rect>
+        <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14.5v2"></path>
+      </symbol>
+      <symbol id="i-sparkles" viewBox="0 0 24 24">
+        <path d="m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Z"></path>
+        <path d="m19 14 .8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z"></path>
+        <path d="m5 14 .6 1.7L7.3 16l-1.7.6L5 18.3l-.6-1.7L2.7 16l1.7-.6L5 14Z"></path>
+      </symbol>
+      <symbol id="i-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 11v6M12 7.5h.01"></path>
+      </symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24">
+        <path d="M4 12h16m0 0-5-5m5 5-5 5"></path>
+      </symbol>
+      <symbol id="i-file" viewBox="0 0 24 24">
+        <path d="M6 2.8h7l5 5v13.4H6z"></path>
+        <path d="M13 2.8v5h5M9 13h6M9 17h4"></path>
+      </symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24">
+        <path d="M10.3 3.7 2.6 17.1A1.8 1.8 0 0 0 4.2 20h15.6a1.8 1.8 0 0 0 1.6-2.9L13.7 3.7a2 2 0 0 0-3.4 0Z"></path>
+        <path d="M12 9v4M12 16.5h.01"></path>
+      </symbol>
+      <symbol id="i-pencil" viewBox="0 0 24 24">
+        <path d="m4 20 4.3-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.3 16 4 20Z"></path>
+        <path d="m13.8 6.5 3 3"></path>
+      </symbol>
+      <symbol id="i-chevron-down" viewBox="0 0 24 24">
+        <path d="m6 9 6 6 6-6"></path>
+      </symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24">
+        <path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"></path>
+      </symbol>
+      <symbol id="i-seat" viewBox="0 0 24 24">
+        <path d="M6 3v9h12V3"></path>
+        <path d="M5 12h14a2 2 0 0 1 2 2v3H3v-3a2 2 0 0 1 2-2Z"></path>
+        <path d="M6 17v4M18 17v4"></path>
+      </symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24">
+        <path d="M4 8h14m0 0-3-3m3 3-3 3M20 16H6m0 0 3-3m-3 3 3 3"></path>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-logo"></use></svg></div>
+      <div class="brand-copy">
+        <h1>班级座位编排</h1>
+        <p>SEATING STUDIO</p>
+      </div>
+    </div>
+
+    <label class="class-field" for="classNameInput">
+      <span class="class-field-label">班级</span>
+      <span class="class-field-input-wrap">
+        <input id="classNameInput" type="text" maxlength="30" placeholder="高一（4）班" autocomplete="off" spellcheck="false">
+        <svg class="icon class-pencil" aria-hidden="true"><use href="#i-pencil"></use></svg>
+      </span>
+    </label>
+
+    <div class="header-actions">
+      <div class="mode-toggle" role="group" aria-label="座位显示模式">
+        <button type="button" class="mode-btn is-active" data-mode="anonymous" aria-pressed="true" title="座位只显示是否有人，不显示姓名">
+          <svg class="icon" aria-hidden="true"><use href="#i-eye-off"></use></svg>
+          <span>匿名</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="named" aria-pressed="false" title="座位显示学生姓名">
+          <svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg>
+          <span>姓名</span>
+        </button>
+      </div>
+
+      <div class="history-group" role="group" aria-label="撤销与重做">
+        <button type="button" id="undoBtn" class="icon-btn" title="撤销 (Ctrl+Z)" aria-label="撤销" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#i-undo"></use></svg>
+        </button>
+        <button type="button" id="redoBtn" class="icon-btn" title="重做 (Ctrl+Shift+Z)" aria-label="重做" disabled>
+          <svg class="icon" aria-hidden="true"><use href="#i-redo"></use></svg>
+        </button>
+      </div>
+
+      <button type="button" id="projectBtn" class="btn btn-quiet header-project" title="隐藏管理面板，全屏展示座位图">
+        <svg class="icon" aria-hidden="true"><use href="#i-monitor"></use></svg>
+        <span class="btn-label">投屏</span>
+      </button>
+      <button type="button" id="printBtn" class="icon-btn" title="打印 / 保存为 PDF" aria-label="打印座位图">
+        <svg class="icon" aria-hidden="true"><use href="#i-printer"></use></svg>
+      </button>
+      <button type="button" id="exportBtn" class="btn btn-primary">
+        <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+        <span class="btn-label" id="exportLabel">导出座位图</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="学生名单面板">
+      <div class="sidebar-head">
+        <div>
+          <p class="eyebrow">ROSTER</p>
+          <h2>学生名单 <span id="rosterCount" class="count-badge">0</span></h2>
+        </div>
+        <div class="sidebar-head-actions">
+          <button type="button" id="importBtn" class="btn btn-soft btn-sm">
+            <svg class="icon" aria-hidden="true"><use href="#i-upload"></use></svg>
+            <span>导入</span>
+          </button>
+          <button type="button" id="clearRosterBtn" class="icon-btn icon-btn-sm" title="清空学生名单" aria-label="清空学生名单" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-field">
+        <svg class="icon search-icon" aria-hidden="true"><use href="#i-search"></use></svg>
+        <input id="searchInput" type="text" placeholder="搜索姓名或学号…" autocomplete="off" spellcheck="false" aria-label="搜索姓名或学号">
+        <button type="button" id="searchClearBtn" class="search-clear" aria-label="清除搜索" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+        <kbd class="search-kbd" id="searchKbd">/</kbd>
+      </div>
+
+      <div class="filter-row" role="group" aria-label="筛选学生">
+        <button type="button" class="filter-chip is-active" data-filter="all"><span id="filterAllLabel">全部</span> <span data-count="all">0</span></button>
+        <button type="button" class="filter-chip" data-filter="unassigned"><span id="filterUnassignedLabel">未安排</span> <span data-count="unassigned">0</span></button>
+        <button type="button" class="filter-chip" data-filter="assigned"><span id="filterAssignedLabel">已安排</span> <span data-count="assigned">0</span></button>
+      </div>
+
+      <div class="roster-scroll" id="rosterScroll">
+        <div class="student-list" id="studentList" role="list" aria-label="学生列表"></div>
+        <div class="empty-state" id="emptyRoster" hidden>
+          <div class="empty-art" aria-hidden="true">
+            <div class="empty-card"></div>
+            <div class="empty-card"></div>
+            <div class="empty-card"></div>
+            <svg class="icon"><use href="#i-users"></use></svg>
+          </div>
+          <h3>还没有学生名单</h3>
+          <p>导入姓名和学号后，就可以把学生拖进右边的座位了。</p>
+          <button type="button" id="loadSampleBtn" class="btn btn-soft btn-sm">
+            <svg class="icon" aria-hidden="true"><use href="#i-sparkles"></use></svg>
+            载入示例名单
+          </button>
+          <span class="empty-formats">支持 Excel / CSV / TXT</span>
+        </div>
+        <div class="no-results" id="noResults" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+          <p>没有找到匹配的学生</p>
+          <span>试试输入姓名中的字，或完整学号</span>
+        </div>
+      </div>
+
+      <div class="drop-hint" id="rosterDropHint" hidden>
+        <svg class="icon" aria-hidden="true"><use href="#i-undo"></use></svg>
+        松开即可移出座位
+      </div>
+
+      <div class="sidebar-utility">
+        <button type="button" id="backupBtn" class="utility-btn" title="导出或恢复本机备份">
+          <svg class="icon" aria-hidden="true"><use href="#i-archive"></use></svg>
+          <span>备份</span>
+        </button>
+        <button type="button" id="helpBtn" class="utility-btn" title="查看使用说明">
+          <svg class="icon" aria-hidden="true"><use href="#i-help"></use></svg>
+          <span>使用说明</span>
+        </button>
+      </div>
+
+      <div class="sidebar-foot">
+        <div class="save-state" id="saveState"><span class="save-dot"></span><span id="saveText">自动保存在本机</span></div>
+        <div class="sidebar-tip">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+          <span>拖拽学生，或先点学生再点座位</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <div class="workspace-head">
+        <div class="workspace-title">
+          <div class="title-line">
+            <h2 id="workspaceTitle">座位分布</h2>
+            <div class="view-switch" role="tablist" aria-label="切换视图">
+              <button type="button" class="view-btn is-active" data-view="seats" role="tab" aria-selected="true">座位表</button>
+              <button type="button" class="view-btn" data-view="exam" role="tab" aria-selected="false">考试选排</button>
+            </div>
+            <span class="mode-badge" id="modeBadge">
+              <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+              <span>匿名展示</span>
+            </span>
+          </div>
+          <p><span id="layoutSummary">靠窗 2 × 6 + 1 加座 · 中间 5 × 6 · 靠门 2 × 6</span><span class="sep-dot">·</span><span id="seatTotalText">共 55 个座位</span></p>
+        </div>
+        <div class="workspace-tools">
+          <div class="stat-pill">
+            <span class="stat-icon is-assigned"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>
+            <span><strong id="assignedCount">0</strong> <span id="assignedLabel">已安排</span></span>
+          </div>
+          <div class="stat-pill is-muted">
+            <span class="stat-icon"><svg class="icon" aria-hidden="true"><use href="#i-seat"></use></svg></span>
+            <span><strong id="emptyCount">55</strong> <span id="emptyLabel">空位</span></span>
+          </div>
+          <button type="button" id="clearSeatsBtn" class="icon-btn" title="清空所有座位安排" aria-label="清空所有座位安排" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#i-trash"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <section class="chart-card" id="chartCard" aria-label="班级座位图">
+        <div class="print-head">
+          <div>
+            <p class="print-eyebrow">CLASSROOM SEATING CHART</p>
+            <h2 id="printClassName">我的班级</h2>
+          </div>
+          <div class="print-meta">
+            <span id="printDate"></span>
+            <span id="printMode">匿名版</span>
+          </div>
+        </div>
+
+        <div class="chart-scroll" id="chartScroll">
+          <div class="classroom">
+            <div class="stage-wrap">
+              <div class="stage">
+                <span class="stage-chalk">讲 台</span>
+                <span class="stage-sub">BLACKBOARD</span>
+              </div>
+              <span class="front-indicator">前 方</span>
+            </div>
+
+            <div class="seat-area" id="seatArea">
+              <div class="front-zone">
+                <div class="front-seat-slot" id="frontSeatSlot"></div>
+                <span class="front-note">
+                  <span class="front-note-dot"></span>
+                  靠窗加座
+                </span>
+              </div>
+
+              <div class="block-row">
+                <section class="block" data-block="window" aria-label="靠窗区">
+                  <div class="block-label">
+                    <span class="block-name"><svg class="icon" aria-hidden="true"><use href="#i-window"></use></svg>靠窗区</span>
+                    <span class="block-meta">2 × 6</span>
+                  </div>
+                  <div class="block-grid" id="blockWindow" style="--cols:2"></div>
+                </section>
+
+                <section class="block" data-block="middle" aria-label="中间区">
+                  <div class="block-label">
+                    <span class="block-name">中间区</span>
+                    <span class="block-meta">5 × 6</span>
+                  </div>
+                  <div class="block-grid" id="blockMiddle" style="--cols:5"></div>
+                </section>
+
+                <section class="block" data-block="door" aria-label="靠门区">
+                  <div class="block-label">
+                    <span class="block-name">靠门区<svg class="icon" aria-hidden="true"><use href="#i-door"></use></svg></span>
+                    <span class="block-meta">2 × 6</span>
+                  </div>
+                  <div class="block-grid" id="blockDoor" style="--cols:2"></div>
+                </section>
+              </div>
+            </div>
+
+            <div class="chart-footer">
+              <div class="legend" aria-label="图例">
+                <span class="legend-item"><span class="legend-seat is-occupied"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>已安排</span>
+                <span class="legend-item"><span class="legend-seat is-empty"></span>空位</span>
+                <span class="legend-item"><span class="legend-seat is-front"></span>靠窗加座</span>
+              </div>
+              <p class="chart-hint" id="chartHint">拖动调整位置 · 点击座位管理</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chart-card exam-card" id="examCard" aria-label="考试选排" hidden>
+        <div class="print-head">
+          <div>
+            <p class="print-eyebrow">EXAM ROW PREFERENCE</p>
+            <h2 id="examPrintClassName">我的班级</h2>
+          </div>
+          <div class="print-meta">
+            <span id="examPrintDate"></span>
+            <span id="examPrintMode">匿名版</span>
+          </div>
+        </div>
+
+        <div class="exam-board-wrap">
+          <div class="exam-board" id="examBoard"></div>
+        </div>
+
+        <div class="chart-footer exam-footer">
+          <div class="legend" aria-label="选排图例">
+            <span class="legend-item"><span class="legend-seat is-occupied"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg></span>已选排</span>
+            <span class="legend-item"><span class="legend-seat is-empty"></span>空位</span>
+            <span class="legend-item"><span class="legend-seat is-middle"></span>中间位（每排第 5 座）</span>
+          </div>
+          <p class="chart-hint" id="examHint">拖动调整位置 · 点击选排位管理</p>
+        </div>
+      </section>
+
+      <p class="workspace-footnote" id="workspaceFootnote">
+        <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+        <span id="workspaceFootnoteText">座位布局固定为「靠窗 2 列 + 中间 5 列 + 靠门 2 列」，每区 6 排；靠窗区最前方另有 1 个独立加座。</span>
+      </p>
+    </main>
+  </div>
+
+  <div class="seat-menu" id="seatMenu" hidden role="dialog" aria-label="座位操作">
+    <div class="seat-menu-head">
+      <span class="seat-menu-tag" id="seatMenuTag">座位</span>
+      <button type="button" class="icon-btn icon-btn-sm" id="seatMenuClose" aria-label="关闭">
+        <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+      </button>
+    </div>
+    <div class="seat-menu-body" id="seatMenuBody"></div>
+    <div class="seat-menu-actions">
+      <button type="button" class="btn btn-danger-soft btn-sm" id="seatMenuRemove">
+        <svg class="icon" aria-hidden="true"><use href="#i-undo"></use></svg>
+        移出座位
+      </button>
+    </div>
+  </div>
+
+  <dialog class="modal" id="importDialog" aria-labelledby="importTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">IMPORT ROSTER</p>
+          <h2 id="importTitle">导入学生名单</h2>
+        </div>
+        <button type="button" class="icon-btn" id="importCloseBtn" aria-label="关闭导入窗口">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="选择或拖入名单文件">
+          <input type="file" id="fileInput" accept=".xlsx,.csv,.tsv,.txt" hidden>
+          <div class="drop-icon"><svg class="icon" aria-hidden="true"><use href="#i-upload"></use></svg></div>
+          <div class="drop-copy">
+            <strong id="dropTitle">点击选择，或把文件拖到这里</strong>
+            <span id="dropSub">支持 Excel (.xlsx)、CSV、TXT，大小不超过 15 MB</span>
+          </div>
+          <span class="drop-action">选择文件</span>
+        </div>
+
+        <div class="or-divider"><span>或直接粘贴名单</span></div>
+
+        <textarea id="importText" class="import-textarea" rows="6" spellcheck="false" placeholder="每行一名学生，姓名在前、学号在后：&#10;张三, 20260101&#10;李四, 20260102&#10;&#10;也可以直接粘贴 Excel 中的两列，表头会自动识别。"></textarea>
+
+        <div class="import-meta" id="importMeta" hidden></div>
+        <div class="import-preview" id="importPreview" hidden></div>
+
+        <label class="check-row">
+          <input type="checkbox" id="overwriteCheck">
+          <span class="check-box" aria-hidden="true"><svg class="icon"><use href="#i-check"></use></svg></span>
+          <span>
+            <strong>覆盖现有名单</strong>
+            <small>会同时清空当前所有座位安排；不勾选则追加并自动去重。</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="modal-foot">
+        <div class="modal-foot-note">
+          <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+          名单只保存在这台电脑的浏览器里
+        </div>
+        <div class="modal-foot-actions">
+          <button type="button" class="btn btn-quiet" id="importCancelBtn">取消</button>
+          <button type="button" class="btn btn-primary" id="importConfirmBtn" disabled>
+            <svg class="icon" aria-hidden="true"><use href="#i-upload"></use></svg>
+            <span id="importConfirmText">导入名单</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal modal-wide" id="backupDialog" aria-labelledby="backupTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">BACKUP</p>
+          <h2 id="backupTitle">备份与恢复</h2>
+        </div>
+        <button type="button" class="icon-btn" id="backupCloseBtn" aria-label="关闭备份窗口">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <section class="backup-section">
+          <div class="backup-section-head">
+            <h3>导出备份</h3>
+            <span class="backup-summary" id="backupSummary">共 0 名学生</span>
+          </div>
+          <p class="backup-desc">选择要保存的内容。座位表和考试选排可以单独备份，也可以全部备份；备份文件不需要填写说明。</p>
+          <div class="backup-scope" id="backupScopeGroup" role="group" aria-label="选择备份内容">
+            <label class="check-row backup-scope-row">
+              <input type="checkbox" id="backupScopeSeats" checked>
+              <span class="check-box" aria-hidden="true"><svg class="icon"><use href="#i-check"></use></svg></span>
+              <span>
+                <strong>座位表</strong>
+                <small>班级名、名单、座位安排和显示模式</small>
+              </span>
+            </label>
+            <label class="check-row backup-scope-row">
+              <input type="checkbox" id="backupScopeExam" checked>
+              <span class="check-box" aria-hidden="true"><svg class="icon"><use href="#i-check"></use></svg></span>
+              <span>
+                <strong>选排</strong>
+                <small>6 排选择、每排中间位和显示模式</small>
+              </span>
+            </label>
+          </div>
+          <p class="backup-hint">至少选择一项；导入时只会恢复备份里实际包含的内容。</p>
+          <p class="form-error" id="backupExportError" hidden></p>
+          <button type="button" id="backupExportBtn" class="btn btn-primary backup-action">
+            <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+            导出所选备份
+          </button>
+        </section>
+
+        <div class="or-divider"><span>恢复备份</span></div>
+
+        <section class="backup-section backup-restore">
+          <h3>导入备份</h3>
+          <p class="backup-desc">选择本工具导出的 <strong>.json</strong> 备份文件。确认后只会恢复文件中包含的座位表或考试选排，不会清空另一项。</p>
+          <input type="file" id="backupFileInput" accept=".json,application/json" hidden>
+          <p class="form-error" id="backupImportError" hidden></p>
+          <button type="button" id="backupImportBtn" class="btn btn-soft backup-action">
+            <svg class="icon" aria-hidden="true"><use href="#i-upload"></use></svg>
+            选择备份文件
+          </button>
+        </section>
+      </div>
+
+      <div class="modal-foot">
+        <div class="modal-foot-note">
+          <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+          备份文件可以复制到另一台电脑恢复
+        </div>
+        <div class="modal-foot-actions">
+          <button type="button" class="btn btn-quiet" id="backupCancelBtn">关闭</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal modal-wide help-modal" id="helpDialog" aria-labelledby="helpTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">GUIDE</p>
+          <h2 id="helpTitle">使用说明</h2>
+        </div>
+        <button type="button" class="icon-btn" id="helpCloseBtn" aria-label="关闭使用说明">
+          <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body help-body">
+        <p class="help-lead">这是一个放在本机浏览器里的座位编排工具。名单和座位不会上传，按下面的顺序操作即可。</p>
+
+        <h3>1. 快速开始</h3>
+        <ol>
+          <li>点左上角「导入」，选择 Excel / CSV 文件，或直接粘贴「姓名, 学号」。</li>
+          <li>在「座位表 / 考试选排」之间切换；把左侧学生拖到右边对应位置。</li>
+          <li>用右上角切换「匿名 / 姓名」，最后导出图片或做一份备份。</li>
+        </ol>
+
+        <h3>2. 座位布局</h3>
+        <p>靠窗区在左，靠门区在右。靠窗区为 <strong>2 × 6</strong>，中间区为 <strong>5 × 6</strong>，靠门区为 <strong>2 × 6</strong>；靠窗区最前方另有 1 个独立的「靠窗加座」，共 55 个座位。</p>
+
+        <h3>3. 考试选排</h3>
+        <p>切到「考试选排」后，每个学生可以单独选择想坐的排数：共 <strong>6 排</strong>，每排 <strong>9 个位置</strong>，和座位表的容量一致；每排第 <strong>5</strong> 位用陶土色标为「中间位」。考试选排与座位表互相独立，同一名学生可以两边都有安排。</p>
+        <p>拖动学生到具体位置，或拖到某一排左侧的排号上，自动放进本排第一个空位；一排 9 人满后不能再放。导出的考试选排图会按排展示学生，并在底部单独列出「每排中间位」。</p>
+
+        <h3>4. 安排与调整</h3>
+        <ul>
+          <li>拖拽学生到空座位；拖到已有人的座位会交换两人位置。</li>
+          <li>把座位上的学生拖回左侧名单，或点击座位后在浮层里选择「移出座位」。</li>
+          <li>点击座位可以管理；撤销 <kbd>Ctrl</kbd> + <kbd>Z</kbd>，重做 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd>。</li>
+        </ul>
+
+        <h3>5. 匿名与姓名模式</h3>
+        <p><strong>匿名</strong>是默认模式：座位和选排位上只显示勾选，不显示姓名；左侧名单也不会显示任何人的位置，点击已安排的学生不会定位。切到<strong>姓名</strong>后，座位/选排位显示姓名和学号，左侧才会出现位置并支持点击定位。</p>
+
+        <h3>6. 搜索与导入</h3>
+        <p>搜索框同时支持姓名和学号，例如输入「杨智清」或「1」都能筛选。导入支持 <strong>.xlsx / .csv / .tsv / .txt</strong>，每行一名学生，姓名在前、学号在后；也支持带表头的两列。名单默认追加并自动去重，勾选「覆盖现有名单」才会替换。</p>
+
+        <h3>7. 导出与打印</h3>
+        <p>座位表导出会生成一张干净的 PNG：只保留班级名、区块说明和座位，不绘制讲台、图例和生成日期。考试选排导出会按 6 排列出每排学生，并在底部单独列出中间位。座位表为 3600 × 2240，考试选排为 3600 × 2080，适合打印或发到班级群。需要 PDF 时用「打印」，在浏览器打印窗口里选择「另存为 PDF」。</p>
+
+        <h3>8. 备份与恢复</h3>
+        <p>点左下角「备份」，勾选要备份的 <strong>座位表</strong>、<strong>考试选排</strong>，可只备份一项或两项全部，不需要填写说明。恢复时选择 JSON，确认后只恢复文件中包含的内容，不会清空另一项；恢复可以用 <kbd>Ctrl</kbd> + <kbd>Z</kbd> 撤销。</p>
+
+        <h3>9. 数据与快捷键</h3>
+        <p>数据自动保存在这台电脑的浏览器里，不会自动打开任何说明窗口。按 <kbd>/</kbd> 快速搜索，按 <kbd>Esc</kbd> 取消选择或关闭浮层。换电脑时请用备份文件，或至少导出座位图。</p>
+        <p class="help-note">提示：清理浏览器网站数据会删除本机名单，建议养成定期备份的习惯。</p>
+      </div>
+
+      <div class="modal-foot">
+        <div class="modal-foot-note">
+          <svg class="icon" aria-hidden="true"><use href="#i-info"></use></svg>
+          说明只在点击时打开
+        </div>
+        <div class="modal-foot-actions">
+          <button type="button" class="btn btn-primary" id="helpDoneBtn">知道了</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal modal-sm" id="confirmDialog" aria-labelledby="confirmTitle">
+    <div class="modal-card">
+      <div class="confirm-icon" id="confirmIcon"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg></div>
+      <h2 id="confirmTitle">确认操作</h2>
+      <p id="confirmText"></p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-quiet" id="confirmCancelBtn">取消</button>
+        <button type="button" class="btn btn-danger" id="confirmOkBtn">确认</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="projection-ui" id="projectionUi" hidden>
+    <div class="projection-info">
+      <span class="projection-brand"><svg class="icon" aria-hidden="true"><use href="#i-logo"></use></svg></span>
+      <div>
+        <strong id="projectionClass">我的班级</strong>
+        <span id="projectionMeta">匿名模式 · 55 个座位</span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-quiet" id="exitProjectionBtn">
+      <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+      退出投屏 <kbd>Esc</kbd>
+    </button>
+  </div>
+
+  <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
